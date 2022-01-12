@@ -15,25 +15,34 @@ import {
 
 export default function App() {
   const [courseGoals, setCourseGoals] = useState([]);
+  const [isAddMode, setisAddMode] = useState(false);
 
-  function addGoalHandler(enteredGoal) {
+  console.log(`(APP RENDERED) courseGoals`, courseGoals);
+
+  function onaddGoal(enteredGoal) {
+    console.log(`enteredGoal in ADDGOALHANDLER`, enteredGoal);
     setCourseGoals((currentGoals) => [
       ...currentGoals,
       { key: Math.random().toString(), value: enteredGoal },
     ]);
+    setisAddMode(false);
+    console.log(`courseGoals`, courseGoals);
   }
+
   function deleteItemHandler(id) {
-    setCourseGoals((courseGoals) =>
-      courseGoals.filter((goal) => goal.key != id)
-    );
+    console.log('deleteHandler RAN');
+    setCourseGoals((courseGoals) => {
+      return courseGoals.filter((goal) => goal.key != id);
+    });
   }
 
   return (
     <View style={styles.screen}>
-      <GoalInput addGoalHandler={addGoalHandler}></GoalInput>
+      <Button title="Add New Goal" onPress={() => setisAddMode(true)}></Button>
+      <GoalInput visible={isAddMode} onAddGoal={onaddGoal}></GoalInput>
       <FlatList
         style={{ padding: 10 }}
-        keyExtractor={(item, index) => item.id}
+        keyExtractor={(item, index) => item.key}
         data={courseGoals}
         renderItem={(itemData) => (
           <GoalItem itemData={itemData} onDelete={deleteItemHandler}></GoalItem>
